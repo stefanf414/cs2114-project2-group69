@@ -1,9 +1,8 @@
 /**
- * Ryan's order assembler: builds ice cream orders and stores submitted orders
- * in a shared history. Uses the team's standard LinkedChain class.
+ * Builds ice cream orders and stores submitted orders
+ * in a shared history. 
  *
- * This class does not read input or print anything. The UserInterface class
- * is responsible for interacting with the customer.
+ * 
  */
 public class RyanOrderListAssembler {
 
@@ -89,9 +88,7 @@ public class RyanOrderListAssembler {
     }
 
     /**
-     * Submits the unfinished order to history, newest first.
-     * A valid order already has a cone and flavor, as guaranteed by
-     * IceCreamOrder's constructor.
+     * Submits the unfinished order to history, newest first
      *
      * @return true if an order was submitted, false if no order exists
      */
