@@ -152,7 +152,7 @@ discounts and nutritional information.
 | `OrderStats.java`, `OrderStatsTest.java` | Ashwin |
 | `UserInterface.java`, `UserInterfaceTest.java` | Stefan |
 | `OrderHistory.java` | Stefan |
-| `Topping.java`, `ToppingTest.java`, `IceCreamOrder.java` | Cassandra |
+| `Topping.java`, `ToppingTest.java`, `IceCreamOrder.java` | Stefan |
 | `Flavor.java`, `Cone.java` | Stefan |
 
 ### GenAI note
