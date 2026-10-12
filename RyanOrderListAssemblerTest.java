@@ -1,8 +1,7 @@
 import student.TestCase;
 
 /**
- * Tests RyanOrderListAssembler against the project's LinkedChain and
- * IceCreamOrder contracts.
+ * Tests RyanOrderListAssembler 
  */
 public class RyanOrderListAssemblerTest extends TestCase {
 
@@ -13,7 +12,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
     private Topping sprinkles;
     private Topping fudge;
 
-    /** Creates fresh test objects before each test. */
+    /** 
+    * Creates fresh test objects before each test. 
+    */
     public void setUp() {
         history = new LinkedChain<IceCreamOrder>();
         assembler = new RyanOrderListAssembler(history);
@@ -23,7 +24,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         fudge = new Topping("Fudge", 0.75);
     }
 
-    /** Tests initial assembler state. */
+    /** 
+    * Tests initial assembler state. 
+    */
     public void testConstructor() {
         assertFalse(assembler.hasCurrentOrder());
         assertNull(assembler.getCurrentOrder());
@@ -31,7 +34,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(0, assembler.getHistoryArray().length);
     }
 
-    /** Tests creation of a cone-and-flavor order. */
+    /** 
+    * Tests creation of a cone-and-flavor order.
+    */
     public void testStartOrder() {
         assembler.startOrder(cone, flavor);
         assertTrue(assembler.hasCurrentOrder());
@@ -39,7 +44,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(3.00, assembler.getCurrentTotal(), 0.001);
     }
 
-    /** Starting another order discards the unfinished one. */
+    /** 
+    * Starting another order discards the unfinished one. 
+    */
     public void testStartOrderAgain() {
         assembler.startOrder(cone, flavor);
         assembler.addTopping(sprinkles);
@@ -48,25 +55,29 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(0, assembler.getOrderCount());
     }
 
-    /** Rejects a null cone or flavor. */
+    /** 
+    * Rejects a null cone or flavor. 
+    */
     public void testStartOrderNull() {
         try {
             assembler.startOrder(null, flavor);
             fail("Expected IllegalArgumentException for null cone");
         }
         catch (IllegalArgumentException e) {
-            // Expected.
+            
         }
         try {
             assembler.startOrder(cone, null);
             fail("Expected IllegalArgumentException for null flavor");
         }
         catch (IllegalArgumentException e) {
-            // Expected.
+            
         }
     }
 
-    /** Invalid start does not discard an existing valid current order. */
+    /** 
+    * Invalid start does not discard an existing valid current order.
+    */
     public void testInvalidStartKeepsCurrentOrder() {
         assembler.startOrder(cone, flavor);
         IceCreamOrder original = assembler.getCurrentOrder();
@@ -80,7 +91,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertSame(original, assembler.getCurrentOrder());
     }
 
-    /** Adds multiple different toppings and updates the total. */
+    /** 
+    * Adds multiple different toppings and updates the total. 
+    */
     public void testAddTopping() {
         assembler.startOrder(cone, flavor);
         assertTrue(assembler.addTopping(sprinkles));
@@ -89,7 +102,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(4.25, assembler.getCurrentTotal(), 0.001);
     }
 
-    /** Counts and prices duplicate topping entries separately. */
+    /** 
+    * Counts and prices duplicate topping entries separately.
+    */
     public void testAddDuplicateTopping() {
         assembler.startOrder(cone, flavor);
         assertTrue(assembler.addTopping(sprinkles));
@@ -98,7 +113,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(4.00, assembler.getCurrentTotal(), 0.001);
     }
 
-    /** Cannot add a topping if an order is absent or the topping is null. */
+    /** 
+    * Cannot add a topping if an order is absent or the topping is null. 
+    */
     public void testAddToppingInvalid() {
         assertFalse(assembler.addTopping(sprinkles));
         assembler.startOrder(cone, flavor);
@@ -106,7 +123,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(0, assembler.getCurrentOrder().getToppingCount());
     }
 
-    /** Removes exactly one copy of a duplicated topping. */
+    /** 
+    * Removes exactly one copy of a duplicated topping.
+    */
     public void testRemoveTopping() {
         assembler.startOrder(cone, flavor);
         assembler.addTopping(sprinkles);
@@ -116,7 +135,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(3.50, assembler.getCurrentTotal(), 0.001);
     }
 
-    /** Removing a missing/null topping leaves the order intact. */
+    /** 
+    * Removing a missing/null topping leaves the order intact. 
+    */
     public void testRemoveMissingTopping() {
         assembler.startOrder(cone, flavor);
         assertFalse(assembler.removeTopping(fudge));
@@ -125,13 +146,17 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(3.00, assembler.getCurrentTotal(), 0.001);
     }
 
-    /** Removing before an order is started returns false. */
+    /** 
+    * Removing before an order is started returns false. 
+    */
     public void testRemoveWithNoOrder() {
         assertFalse(assembler.removeTopping(sprinkles));
         assertFalse(assembler.removeTopping(null));
     }
 
-    /** Total is zero without an order, otherwise includes selected items. */
+    /** 
+    * Total is zero without an order, otherwise includes selected items.
+    */
     public void testGetCurrentTotal() {
         assertEquals(0.0, assembler.getCurrentTotal(), 0.001);
         assembler.startOrder(cone, flavor);
@@ -139,7 +164,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(3.75, assembler.getCurrentTotal(), 0.001);
     }
 
-    /** Submitting adds a completed order to the shared history. */
+    /** 
+    * Submitting adds a completed order to the shared history. 
+    */
     public void testSubmitOrder() {
         assembler.startOrder(cone, flavor);
         assembler.addTopping(sprinkles);
@@ -151,20 +178,26 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertSame(submitted, history.get(0));
     }
 
-    /** A valid cone-and-flavor order needs no toppings to be submitted. */
+    /** 
+    * A valid cone-and-flavor order needs no toppings to be submitted. 
+    */
     public void testSubmitNoToppings() {
         assembler.startOrder(cone, flavor);
         assertTrue(assembler.submitOrder());
         assertEquals(1, assembler.getOrderCount());
     }
 
-    /** Cannot submit when there is no current order. */
+    /** 
+    * Cannot submit when there is no current order. 
+    */
     public void testSubmitNoOrder() {
         assertFalse(assembler.submitOrder());
         assertEquals(0, assembler.getOrderCount());
     }
 
-    /** Cancel discards the current order but not history. */
+    /**
+    * Cancel discards the current order but not history. 
+    */
     public void testCancelOrder() {
         assembler.startOrder(cone, flavor);
         assembler.submitOrder();
@@ -178,7 +211,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertEquals(1, assembler.getOrderCount());
     }
 
-    /** History is newest first and returned as a separate array. */
+    /** 
+    * History is newest first and returned as a separate array. 
+    */
     public void testGetHistoryArray() {
         assembler.startOrder(cone, flavor);
         IceCreamOrder first = assembler.getCurrentOrder();
@@ -197,7 +232,9 @@ public class RyanOrderListAssemblerTest extends TestCase {
         assertSame(second, assembler.getHistoryArray()[0]);
     }
 
-    /** Constructor rejects a null history. */
+    /** 
+    * Constructor rejects a null history. 
+    */
     public void testNullHistory() {
         try {
             new RyanOrderListAssembler(null);
