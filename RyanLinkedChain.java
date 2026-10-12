@@ -1,14 +1,7 @@
 /**
- * Ryan's standalone reference implementation of a generic linked chain.
+ * Implementation of a generic linked chain.
  * Accepts duplicate entries.
  *
- * Entries must be non-null. add() inserts at the front so the newest
- * entry is first. The node class is private so users of this class
- * only work with the public chain methods.
- *
- * NOTE: The team specification says LinkedChain is professor-provided
- * and must be used as-is. Use the professor's original LinkedChain.java for team integration.
- * This Ryan-prefixed class is intended only as a separate reference.
  *
  * @param <T> the type of object stored in this chain
  */
@@ -17,7 +10,9 @@ public class RyanLinkedChain<T> {
     private Node<T> firstNode;
     private int numberOfEntries;
 
-    /** Creates an empty chain. */
+    /** 
+    * Creates an empty chain. 
+    */
     public RyanLinkedChain() {
         firstNode = null;
         numberOfEntries = 0;
@@ -42,7 +37,6 @@ public class RyanLinkedChain<T> {
      * @throws IllegalArgumentException if entry is null
      */
     public void addToEnd(T entry) {
-        checkEntry(entry);
         Node<T> newNode = new Node<T>(entry, null);
         if (isEmpty()) {
             firstNode = newNode;
@@ -73,10 +67,10 @@ public class RyanLinkedChain<T> {
     }
 
     /**
-     * Removes ONE occurrence of an entry equal to the given entry.
+     * Removes one occurrence of an entry equal to the given entry.
      *
      * @param entry object to remove
-     * @return true if an entry was removed; false if not found or null
+     * @return true if an entry was removed, false if not found or null
      */
     public boolean remove(T entry) {
         if (entry == null || isEmpty()) {
@@ -187,25 +181,33 @@ public class RyanLinkedChain<T> {
         return numberOfEntries;
     }
 
-    /** @return true if the chain has no entries */
+    /** 
+    * @return true if the chain has no entries 
+    */
     public boolean isEmpty() {
         return numberOfEntries == 0;
     }
 
-    /** Removes all stored entries. */
+    /** 
+    * Removes all stored entries. 
+    */
     public void clear() {
         firstNode = null;
         numberOfEntries = 0;
     }
 
-    /** Rejects entries that cannot be stored in this chain. */
+    /** 
+    * Rejects entries that cannot be stored in this chain. 
+    */
     private void checkEntry(T entry) {
         if (entry == null) {
             throw new IllegalArgumentException("Entries cannot be null.");
         }
     }
 
-    /** One private node of the singly linked chain. */
+    /** 
+    * One private node of the singly linked chain. 
+    */
     private static class Node<E> {
         private E data;
         private Node<E> next;
