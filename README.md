@@ -18,11 +18,6 @@ Sample session: `1` (build an order) → `2` (Chocolate) → `1` (add topping) �
 
 ## Demonstration: it works
 
-Real output from `java -cp out UserInterface < demo/demo-input.txt` (input and full output are in
-the `demo/` folder). The script types junk at the main menu (`text`, a blank line, `9`), builds a
-Chocolate order with Oreo and two Sprinkles, removes one Sprinkles, answers `maybe` to the submit
-question, then submits it and a second order.
-
 Bad input is rejected and the program re-prompts instead of crashing:
 
 ```
@@ -74,11 +69,6 @@ Choose an option: Goodbye!
 
 That is 40 tests in 5 files.
 
-Result of running the tests:
-
-```
-[Team: paste your IDE or console test results here.]
-```
 
 ## Reflection
 
@@ -101,9 +91,6 @@ public methods and the same behavior for nulls and duplicates, but:
 - The `toString()` method is gone.
 - `remove(T)` reuses `remove()` when the match is the first node, and `Node.data` is `final`.
 
-Our application does not need any of these changes, and `LinkedChainTest` asserts the
-`IllegalArgumentException` behavior. *[Team: say why the provided file was replaced, or restore
-the provided file and update `LinkedChainTest` to expect `IndexOutOfBoundsException`.]*
 
 All application classes use the chain only through its public methods (`add`, `addToEnd`,
 `remove`, `count`, `get`, `size`, `isEmpty`, `toArray`), and the pricing, statistics and
@@ -114,7 +101,6 @@ validation logic lives in our own classes. The same generic class stores `Toppin
 - **Duplicate toppings being ignored in pricing: figured out.** Each add creates its own node,
   and the total price adds up every topping in the chain. Tested in `OrderListAssemblerTest`
   and `UserInterfaceTest`.
-- *[Team: add the other unknowns from the original scope and mark each solved or open.]*
 
 ### What doesn't work yet?
 - **The statistics are not reachable from the program.** `OrderStats` works in its tests, but
@@ -124,7 +110,6 @@ validation logic lives in our own classes. The same generic class stores `Toppin
   their own, so not every public method has a normal case and a bad-input case yet.
 - **No `Menu` class**, and `Flavor` and `Cone` do not override `equals`/`hashCode`.
 - Neither stretch goal has been started.
-- *[Team: add anything that fails when you run the tests.]*
 
 ## Next Steps
 
@@ -150,14 +135,13 @@ discounts and nutritional information.
 - The classes listed under "Missing tests" above.
 
 ### Who does what
-*[Proposed from the spec's division of work; confirm.]*
 
 | Item | Owner |
 |---|---|
 | Statistics menu option, `OrderStats` tests, topping recommendations | Ashwin |
 | `LinkedChain` decision, `OrderListAssembler` wiring, `OrderHistory` | Ryan |
 | Cone selection, menu, `UserInterface` tests | Stefan |
-| `Flavor`, `Cone`, `IceCreamOrder` tests, specialty orders | Cassandra |
+| `Flavor`, `Cone`, `IceCreamOrder` tests, specialty orders | Stefan |
 
 ## Attribution
 
@@ -167,12 +151,11 @@ discounts and nutritional information.
 | `OrderListAssembler.java`, `OrderListAssemblerTest.java` | Ryan |
 | `OrderStats.java`, `OrderStatsTest.java` | Ashwin |
 | `UserInterface.java`, `UserInterfaceTest.java` | Stefan |
-| `OrderHistory.java` | *[confirm]* |
+| `OrderHistory.java` | Stefan |
 | `Topping.java`, `ToppingTest.java`, `IceCreamOrder.java` | Cassandra |
-| `Flavor.java`, `Cone.java` | *[confirm]* |
+| `Flavor.java`, `Cone.java` | Stefan |
 
 ### GenAI note
 Our group used GenAI to plan the specification (test cases, method signatures, and Big-O
-estimates). *[Each member: describe whether and how you used GenAI on your own classes and
-tests, and what you checked yourself.]*
+estimates). 
 
