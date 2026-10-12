@@ -37,6 +37,7 @@ public class RyanLinkedChain<T> {
      * @throws IllegalArgumentException if entry is null
      */
     public void addToEnd(T entry) {
+        checkEntry(entry);
         Node<T> newNode = new Node<T>(entry, null);
         if (isEmpty()) {
             firstNode = newNode;
