@@ -1,15 +1,9 @@
-import java.util.Locale;
-
-/** Stores submitted ice-cream orders in newest-first order. */
+/** Compatibility wrapper around a completed-order chain. */
 public class OrderHistory {
-    private final LinkedChain<IceCreamOrder> orders;
+    private final LinkedChain<IceCreamOrder> orders =
+            new LinkedChain<IceCreamOrder>();
 
-    /** Creates an empty order history. */
-    public OrderHistory() {
-        orders = new LinkedChain<IceCreamOrder>();
-    }
-
-    /** Adds an order as the newest completed order. */
+    /** Adds an order as newest. */
     public void submit(IceCreamOrder order) {
         if (order == null) {
             throw new IllegalArgumentException("Order cannot be null.");
@@ -17,27 +11,29 @@ public class OrderHistory {
         orders.add(order);
     }
 
-    /** Returns the number of completed orders. */
+    /** Returns the number of orders. */
     public int size() {
         return orders.size();
     }
 
-    /** Returns the order at a zero-based index, newest first. */
+    /** Returns an order by newest-first index. */
     public IceCreamOrder getOrder(int index) {
         return orders.get(index);
     }
 
-    /** Returns a formatted list of completed orders. */
+    /** Returns the backing chain. */
+    public LinkedChain<IceCreamOrder> getChain() {
+        return orders;
+    }
+
+    /** Returns formatted history. */
     public String display() {
         if (orders.isEmpty()) {
-            return "Completed orders: none";
+            return "No orders yet.";
         }
         StringBuilder result = new StringBuilder("Completed orders:\n");
         for (int i = 0; i < orders.size(); i++) {
-            IceCreamOrder order = orders.get(i);
-            result.append(i + 1).append(". ").append(order.getFlavor());
-            result.append(String.format(
-                    Locale.US, " ($%.2f)", order.total()));
+            result.append(i + 1).append(".\n").append(orders.get(i));
             if (i + 1 < orders.size()) {
                 result.append("\n");
             }

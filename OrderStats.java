@@ -1,16 +1,10 @@
 import java.util.Locale;
 
-/**
- * Provides read-only statistics for a shared chain of completed orders.
- * OrderStats never adds, removes, or changes orders.
- *
- * @author Ashwin
- * @version October 2026
- */
+/** Read-only statistics over completed orders. */
 public class OrderStats {
     private final LinkedChain<IceCreamOrder> completedOrders;
 
-    /** Stores a reference to the shared completed-order chain. */
+    /** Creates statistics backed by a non-null order chain. */
     public OrderStats(LinkedChain<IceCreamOrder> orders) {
         if (orders == null) {
             throw new IllegalArgumentException("Order chain must not be null.");
@@ -18,7 +12,7 @@ public class OrderStats {
         completedOrders = orders;
     }
 
-    /** Returns true when at least one completed order exists. */
+    /** Returns whether history contains an order. */
     public boolean hasOrders() {
         return !completedOrders.isEmpty();
     }
@@ -28,90 +22,76 @@ public class OrderStats {
         return completedOrders.size();
     }
 
-    /** Returns the most popular flavor, or null when history is empty. */
+    /** Returns the most popular flavor; first seen wins ties. */
     public String getMostPopularFlavor() {
         IceCreamOrder[] orders = snapshot();
-        if (orders.length == 0) {
-            return null;
-        }
         String[] names = new String[orders.length];
         int[] counts = new int[orders.length];
-        int distinct = 0;
-
+        int used = 0;
         for (IceCreamOrder order : orders) {
-            String flavor = order.getFlavor();
-            int slot = indexOf(names, distinct, flavor);
-            if (slot < 0) {
-                names[distinct] = flavor;
-                counts[distinct] = 1;
-                distinct++;
-            }
-            else {
-                counts[slot]++;
+            String name = order.getFlavor().getName();
+            int index = find(names, used, name);
+            if (index < 0) {
+                names[used] = name;
+                counts[used++] = 1;
+            } else {
+                counts[index]++;
             }
         }
-        return names[maxIndex(counts, distinct)];
+        return used == 0 ? null : names[maxIndex(counts, used)];
     }
 
-    /** Returns the most common topping, or null when none have been ordered. */
+    /** Returns the most common topping, counting duplicates. */
     public String getMostCommonTopping() {
         IceCreamOrder[] orders = snapshot();
         int capacity = 0;
         for (IceCreamOrder order : orders) {
             capacity += order.getToppingCount();
         }
-        if (capacity == 0) {
-            return null;
-        }
-
         String[] names = new String[capacity];
         int[] counts = new int[capacity];
-        int distinct = 0;
+        int used = 0;
         for (IceCreamOrder order : orders) {
             for (Topping topping : order.getToppingArray()) {
-                int slot = indexOf(names, distinct, topping.getName());
-                if (slot < 0) {
-                    names[distinct] = topping.getName();
-                    counts[distinct] = 1;
-                    distinct++;
-                }
-                else {
-                    counts[slot]++;
+                int index = find(names, used, topping.getName());
+                if (index < 0) {
+                    names[used] = topping.getName();
+                    counts[used++] = 1;
+                } else {
+                    counts[index]++;
                 }
             }
         }
-        return names[maxIndex(counts, distinct)];
+        return used == 0 ? null : names[maxIndex(counts, used)];
     }
 
-    /** Counts completed orders by flavor, ignoring case and whitespace. */
+    /** Counts orders with a flavor name, ignoring case. */
     public int getFlavorCount(String flavor) {
         requireName(flavor);
-        String wanted = flavor.trim();
-        int count = 0;
+        int result = 0;
         for (IceCreamOrder order : snapshot()) {
-            if (order.getFlavor().equalsIgnoreCase(wanted)) {
-                count++;
+            if (order.getFlavor().getName().equalsIgnoreCase(flavor.trim())) {
+                result++;
             }
         }
-        return count;
+        return result;
     }
 
-    /** Counts topping servings across all completed orders. */
+    /** Counts topping servings with a name, ignoring case. */
     public int getToppingCount(String name) {
         requireName(name);
-        String wanted = name.trim();
-        int count = 0;
+        int result = 0;
         for (IceCreamOrder order : snapshot()) {
             for (Topping topping : order.getToppingArray()) {
-                if (topping.getName().equalsIgnoreCase(wanted)) {
-                    count++;
+                if (topping.getName().equalsIgnoreCase(name.trim())) {
+                    result++;
                 }
             }
         }
-        return count;
+        return result;
     }
 
-    /** Returns the average order price, or zero when history is empty. */
+    /** Returns average order price, or zero if empty. */
     public double getAverageOrderPrice() {
         IceCreamOrder[] orders = snapshot();
         if (orders.length == 0) {
@@ -124,7 +104,7 @@ public class OrderStats {
         return total / orders.length;
     }
 
-    /** Returns a formatted statistics summary. */
+    /** Returns the required summary report. */
     public String getSummary() {
         if (!hasOrders()) {
             return "No orders yet.";
@@ -138,23 +118,20 @@ public class OrderStats {
                 getAverageOrderPrice());
     }
 
-    /** Returns a separate array containing the current order history. */
     private IceCreamOrder[] snapshot() {
         return completedOrders.toArray(
                 new IceCreamOrder[completedOrders.size()]);
     }
 
-    /** Finds a name in the used portion of an array, ignoring case. */
-    private static int indexOf(String[] names, int used, String name) {
+    private static int find(String[] names, int used, String wanted) {
         for (int i = 0; i < used; i++) {
-            if (names[i].equalsIgnoreCase(name)) {
+            if (names[i].equalsIgnoreCase(wanted)) {
                 return i;
             }
         }
         return -1;
     }
 
-    /** Returns the index containing the greatest count. */
     private static int maxIndex(int[] counts, int used) {
         int best = 0;
         for (int i = 1; i < used; i++) {
@@ -165,7 +142,6 @@ public class OrderStats {
         return best;
     }
 
-    /** Rejects null and blank names. */
     private static void requireName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name must not be blank.");

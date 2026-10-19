@@ -1,6 +1,5 @@
 /**
- * Generic singly linked chain that stores non-null entries and permits
- * duplicates.
+ * Generic singly linked chain that stores non-null entries and permits duplicates.
  *
  * @param <T> type of entry stored in the chain
  */
@@ -27,8 +26,7 @@ public class LinkedChain<T> {
         Node<T> newNode = new Node<T>(entry, null);
         if (firstNode == null) {
             firstNode = newNode;
-        }
-        else {
+        } else {
             Node<T> current = firstNode;
             while (current.next != null) {
                 current = current.next;
@@ -38,7 +36,7 @@ public class LinkedChain<T> {
         numberOfEntries++;
     }
 
-    /** Removes and returns the first entry, or null when empty. */
+    /** Removes and returns the first entry, or null if empty. */
     public T remove() {
         if (firstNode == null) {
             return null;
@@ -49,7 +47,7 @@ public class LinkedChain<T> {
         return result;
     }
 
-    /** Removes the first entry equal to the supplied value. */
+    /** Removes the first entry equal to entry. */
     public boolean remove(T entry) {
         if (entry == null || firstNode == null) {
             return false;
@@ -70,13 +68,14 @@ public class LinkedChain<T> {
         return false;
     }
 
-    /** Returns the number of entries equal to the supplied value. */
+    /** Counts entries equal to entry. */
     public int count(T entry) {
         if (entry == null) {
             return 0;
         }
         int result = 0;
-        for (Node<T> current = firstNode; current != null; current = current.next) {
+        for (Node<T> current = firstNode; current != null;
+                current = current.next) {
             if (current.data.equals(entry)) {
                 result++;
             }
@@ -84,12 +83,12 @@ public class LinkedChain<T> {
         return result;
     }
 
-    /** Returns whether the chain contains the supplied value. */
+    /** Returns whether the chain contains entry. */
     public boolean contains(T entry) {
         return count(entry) > 0;
     }
 
-    /** Returns the entry at a zero-based index. */
+    /** Returns the entry at index. */
     public T get(int index) {
         if (index < 0 || index >= numberOfEntries) {
             throw new IllegalArgumentException("Index is out of range.");
@@ -101,13 +100,14 @@ public class LinkedChain<T> {
         return current.data;
     }
 
-    /** Copies the entries into the supplied array. */
+    /** Copies entries into target. */
     public T[] toArray(T[] target) {
         if (target == null || target.length < numberOfEntries) {
             throw new IllegalArgumentException("Array is null or too small.");
         }
         int index = 0;
-        for (Node<T> current = firstNode; current != null; current = current.next) {
+        for (Node<T> current = firstNode; current != null;
+                current = current.next) {
             target[index++] = current.data;
         }
         if (target.length > numberOfEntries) {
@@ -116,30 +116,28 @@ public class LinkedChain<T> {
         return target;
     }
 
-    /** Returns the number of entries, including duplicates. */
+    /** Returns the number of entries. */
     public int size() {
         return numberOfEntries;
     }
 
-    /** Returns true when the chain has no entries. */
+    /** Returns whether the chain is empty. */
     public boolean isEmpty() {
         return numberOfEntries == 0;
     }
 
-    /** Removes every entry. */
+    /** Removes all entries. */
     public void clear() {
         firstNode = null;
         numberOfEntries = 0;
     }
 
-    /** Rejects null entries before they are added. */
     private void checkEntry(T entry) {
         if (entry == null) {
             throw new IllegalArgumentException("Entries cannot be null.");
         }
     }
 
-    /** One node in the singly linked chain. */
     private static class Node<E> {
         private final E data;
         private Node<E> next;

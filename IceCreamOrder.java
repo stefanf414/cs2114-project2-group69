@@ -1,12 +1,12 @@
 import java.util.Locale;
 
-/** Represents one ice-cream order with a cone, flavor, and toppings. */
+/** One order containing a cone, flavor, and duplicate-permitting toppings. */
 public class IceCreamOrder {
     private final Cone cone;
     private final Flavor flavor;
     private final LinkedChain<Topping> toppings;
 
-    /** Creates an order from a cone and flavor. */
+    /** Creates an order with no toppings. */
     public IceCreamOrder(Cone cone, Flavor flavor) {
         if (cone == null || flavor == null) {
             throw new IllegalArgumentException("Cone and flavor are required.");
@@ -16,12 +16,22 @@ public class IceCreamOrder {
         toppings = new LinkedChain<Topping>();
     }
 
-    /** Creates an order in a free cup using a flavor name and price. */
-    public IceCreamOrder(String flavorName, double flavorPrice) {
-        this(new Cone("Cup", 0.0), new Flavor(flavorName, flavorPrice));
+    /** Returns the selected cone/container. */
+    public Cone getCone() {
+        return cone;
     }
 
-    /** Adds one topping at the end, including duplicate toppings. */
+    /** Returns the selected flavor object. */
+    public Flavor getFlavor() {
+        return flavor;
+    }
+
+    /** Returns the selected flavor name. */
+    public String getFlavorName() {
+        return flavor.getName();
+    }
+
+    /** Adds one topping; duplicates are allowed. */
     public boolean addTopping(Topping topping) {
         if (topping == null) {
             return false;
@@ -30,52 +40,37 @@ public class IceCreamOrder {
         return true;
     }
 
-    /** Removes one matching topping. */
+    /** Removes one matching topping occurrence. */
     public boolean removeTopping(Topping topping) {
         return toppings.remove(topping);
     }
 
-    /** Returns the selected cone. */
-    public Cone getCone() {
-        return cone;
-    }
-
-    /** Returns the selected flavor object. */
-    public Flavor getFlavorObject() {
-        return flavor;
-    }
-
-    /** Returns the selected flavor's name. */
-    public String getFlavor() {
-        return flavor.getName();
-    }
-
-    /** Returns the number of topping servings. */
+    /** Counts all topping servings. */
     public int getToppingCount() {
         return toppings.size();
     }
 
-    /** Alias used by the console interface and its tests. */
+    /** Compatibility alias for topping count. */
     public int toppingCount() {
         return getToppingCount();
     }
 
-    /** Returns the number of occurrences of a topping. */
+    /** Counts matching topping servings. */
     public int countOf(Topping topping) {
         return toppings.count(topping);
     }
 
-    /** Returns the topping at a zero-based index. */
+    /** Returns one topping by index. */
     public Topping getTopping(int index) {
         return toppings.get(index);
     }
 
-    /** Returns a separate array containing the toppings in order. */
+    /** Returns a copy of all toppings. */
     public Topping[] getToppingArray() {
         return toppings.toArray(new Topping[toppings.size()]);
     }
 
-    /** Returns the total price of the cone, flavor, and all toppings. */
+    /** Calculates the complete price, counting duplicate toppings. */
     public double getTotalPrice() {
         double total = cone.getPrice() + flavor.getPrice();
         for (Topping topping : getToppingArray()) {
@@ -84,30 +79,27 @@ public class IceCreamOrder {
         return total;
     }
 
-    /** Alias used by the console interface and its tests. */
+    /** Compatibility alias for total price. */
     public double total() {
         return getTotalPrice();
     }
 
-    /** Returns a human-readable order summary. */
-    public String display() {
+    /** Returns an itemized order description. */
+    @Override
+    public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("Flavor: ").append(flavor.getName()).append("\n");
-        result.append("Cone: ").append(cone.getName()).append("\n");
-        result.append("Toppings: ");
-        if (toppings.isEmpty()) {
-            result.append("none");
+        result.append("Cone: ").append(cone).append("\n");
+        result.append("Flavor: ").append(flavor).append("\n");
+        for (Topping topping : getToppingArray()) {
+            result.append("Topping: ").append(topping).append("\n");
         }
-        else {
-            for (int i = 0; i < toppings.size(); i++) {
-                if (i > 0) {
-                    result.append(", ");
-                }
-                result.append(toppings.get(i).getName());
-            }
-        }
-        result.append(String.format(
-                Locale.US, "%nTotal: $%.2f", getTotalPrice()));
+        result.append(String.format(Locale.US, "Total: $%.2f",
+                getTotalPrice()));
         return result.toString();
+    }
+
+    /** Compatibility alias for display text. */
+    public String display() {
+        return toString();
     }
 }

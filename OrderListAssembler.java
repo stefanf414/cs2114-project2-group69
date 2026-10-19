@@ -1,58 +1,57 @@
 /**
- * Builds ice-cream orders and stores submitted orders in a shared linked-chain
- * history.
+ * Builds the current order and stores completed orders newest-first.
  */
 public class OrderListAssembler {
-    private IceCreamOrder currentOrder;
     private final LinkedChain<IceCreamOrder> completedOrders;
+    private IceCreamOrder currentOrder;
 
-    /** Creates an assembler that uses the supplied shared history. */
+    /** Creates an assembler backed by a shared history chain. */
     public OrderListAssembler(LinkedChain<IceCreamOrder> history) {
         if (history == null) {
             throw new IllegalArgumentException("Order history cannot be null.");
         }
         completedOrders = history;
-        currentOrder = null;
     }
 
-    /** Starts a new order and discards any unfinished order. */
-    public void startOrder(Cone cone, Flavor flavor) {
-        if (cone == null || flavor == null) {
-            throw new IllegalArgumentException("Cone and flavor are required.");
+    /** Compatibility constructor accepting a menu collaborator. */
+    public OrderListAssembler(Menu menu, LinkedChain<IceCreamOrder> history) {
+        this(history);
+        if (menu == null) {
+            throw new IllegalArgumentException("Menu cannot be null.");
         }
+    }
+
+    /** Starts a new order, discarding any unfinished order. */
+    public void startOrder(Cone cone, Flavor flavor) {
         currentOrder = new IceCreamOrder(cone, flavor);
     }
 
-    /** Returns true when an order is currently being edited. */
+    /** Returns whether an order is in progress. */
     public boolean hasCurrentOrder() {
         return currentOrder != null;
     }
 
-    /** Returns the unfinished order, or null when none exists. */
+    /** Returns the current order, or null. */
     public IceCreamOrder getCurrentOrder() {
         return currentOrder;
     }
 
-    /** Adds one topping to the unfinished order. */
+    /** Adds one topping to the current order. */
     public boolean addTopping(Topping topping) {
-        return currentOrder != null
-                && topping != null
-                && currentOrder.addTopping(topping);
+        return currentOrder != null && currentOrder.addTopping(topping);
     }
 
-    /** Removes one matching topping from the unfinished order. */
+    /** Removes one topping occurrence. */
     public boolean removeTopping(Topping topping) {
-        return currentOrder != null
-                && topping != null
-                && currentOrder.removeTopping(topping);
+        return currentOrder != null && currentOrder.removeTopping(topping);
     }
 
-    /** Returns the current total, or zero when no order exists. */
+    /** Returns the current total, or zero without an order. */
     public double getCurrentTotal() {
         return currentOrder == null ? 0.0 : currentOrder.getTotalPrice();
     }
 
-    /** Submits the current order to the front of the shared history. */
+    /** Submits the current order and clears it. */
     public boolean submitOrder() {
         if (currentOrder == null) {
             return false;
@@ -62,18 +61,18 @@ public class OrderListAssembler {
         return true;
     }
 
-    /** Discards the current unfinished order. */
+    /** Cancels the current order. */
     public void cancelOrder() {
         currentOrder = null;
     }
 
-    /** Returns a separate array containing history in newest-first order. */
+    /** Returns all completed orders, newest first. */
     public IceCreamOrder[] getHistoryArray() {
         return completedOrders.toArray(
                 new IceCreamOrder[completedOrders.size()]);
     }
 
-    /** Returns the number of submitted orders. */
+    /** Returns the number of completed orders. */
     public int getOrderCount() {
         return completedOrders.size();
     }
